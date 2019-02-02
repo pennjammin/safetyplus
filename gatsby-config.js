@@ -59,6 +59,21 @@ module.exports = {
       },
     },
     {
+      resolve: 'gatsby-source-firestore',
+      options: {
+        credential: require("./firebase-key.json"),
+        types: [
+          {
+            type: 'Users',
+            collection: 'users',
+            map: doc => ({
+              points: doc.points
+            }),
+          },
+        ],
+      },
+    },
+    {
       resolve: 'gatsby-plugin-netlify-cms',
       options: {
         modulePath: `${__dirname}/src/cms/cms.js`,

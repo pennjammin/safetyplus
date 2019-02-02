@@ -67,6 +67,8 @@ module.exports = {
             type: 'Users',
             collection: 'users',
             map: doc => ({
+              firstName: doc.firstName,
+              lastName: doc.lastName,
               points: doc.points
             }),
           },

@@ -13,11 +13,11 @@ export default class IndexPage extends React.Component {
         <section className="section">
           <div className="container">
             <div className="content">
-              <h1 className="has-text-weight-bold is-size-2">Leaderboards</h1>
+              <h1 className="has-text-weight-bold is-size-2">Leaderboard</h1>
             </div>
             {users
               .map(({ node: user }) => (
-                <div>{user.points}</div>
+                <div>{user.points}{user.firstName}{user.lastName}</div>
               ))}
           </div>
         </section>
@@ -28,6 +28,9 @@ export default class IndexPage extends React.Component {
 
 IndexPage.propTypes = {
   data: PropTypes.shape({
+    allMarkdownRemark: PropTypes.shape({
+      edges: PropTypes.array,
+    }),
     allUsers: PropTypes.shape({
       edges: PropTypes.array,
     }),
@@ -36,14 +39,35 @@ IndexPage.propTypes = {
 
 export const pageQuery = graphql`
   query IndexQuery {
-    {
-      allUsers {
-        edges {
-          node {
-            points
+    allMarkdownRemark(
+      sort: { order: DESC, fields: [frontmatter___date] },
+      filter: { frontmatter: { templateKey: { eq: "blog-post" } }}
+    ) {
+      edges {
+        node {
+          excerpt(pruneLength: 400)
+          id
+          fields {
+            slug
+          }
+          frontmatter {
+            title
+            templateKey
+            date(formatString: "MMMM DD, YYYY")
           }
         }
       }
-    }    
+    },
+    allUsers(
+      sort: { order: DESC, fields: [points] },
+    ) {
+      edges {
+        node {
+          firstName,
+          lastName,
+          points
+        }
+      }
+    }
   }
 `
